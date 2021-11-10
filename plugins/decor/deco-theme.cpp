@@ -51,6 +51,12 @@ cairo_surface_t*decoration_theme_t::render_text(std::string text,
 {
     const auto format = CAIRO_FORMAT_ARGB32;
     auto surface = cairo_image_surface_create(format, width, height);
+
+    if (height == 0)
+    {
+        return surface;
+    }
+
     auto cr = cairo_create(surface);
 
     const float font_scale = 0.8;
