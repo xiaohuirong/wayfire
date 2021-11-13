@@ -72,7 +72,7 @@ if get_option('b_sanitize').contains('address') or cxx_flags_asan.returncode() =
 endif
 
 if print_trace
-  debug_arguments += ['-DPRINT_TRACE']
+  # debug_arguments += ['-DPRINT_TRACE']
 endif
 
 # First build a static library of all sources, so that it can be reused
