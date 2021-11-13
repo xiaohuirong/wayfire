@@ -46,15 +46,19 @@ class wayfire_resize : public wf::per_output_plugin_instance_t, public wf::point
     };
 
     wf::button_callback activate_binding;
+    wf::button_callback activate_binding_keep_ratio;
 
     wayfire_view view;
 
     bool was_client_request, is_using_touch;
+    bool keep_ratio = false;
     wf::point_t grab_start;
     wf::geometry_t grabbed_geometry;
 
     uint32_t edges;
+
     wf::option_wrapper_t<wf::buttonbinding_t> button{"resize/activate"};
+    wf::option_wrapper_t<wf::buttonbinding_t> button_keep_ratio{"resize/activate_keep_ratio"};
     std::unique_ptr<wf::input_grab_t> input_grab;
     wf::plugin_activation_data_t grab_interface = {
         .name = "resize",
@@ -68,18 +72,18 @@ class wayfire_resize : public wf::per_output_plugin_instance_t, public wf::point
 
         activate_binding = [=] (auto)
         {
-            auto view = wf::get_core().get_cursor_focus_view();
-            if (view)
-            {
-                is_using_touch     = false;
-                was_client_request = false;
-                initiate(view);
-            }
+            activate(false);
+            return false;
+        };
 
+        activate_binding_keep_ratio = [=] (auto)
+        {
+            activate(true);
             return false;
         };
 
         output->add_button(button, &activate_binding);
+        output->add_button(button_keep_ratio, &activate_binding_keep_ratio);
         grab_interface.cancel = [=] ()
         {
             input_pressed(WLR_BUTTON_RELEASED);
@@ -89,6 +93,17 @@ class wayfire_resize : public wf::per_output_plugin_instance_t, public wf::point
         output->connect(&on_view_disappeared);
     }
 
+    void activate(bool keep) {
+        auto view = wf::get_core().get_cursor_focus_view();
+        if (view)
+        {
+            is_using_touch     = false;
+            was_client_request = false;
+            keep_ratio         = keep;
+            initiate(view);
+        }
+    }
+
     void handle_pointer_button(const wlr_pointer_button_event& event) override
     {
         if ((event.state == WLR_BUTTON_RELEASED) && was_client_request && (event.button == BTN_LEFT))
@@ -96,7 +111,7 @@ class wayfire_resize : public wf::per_output_plugin_instance_t, public wf::point
             return input_pressed(event.state);
         }
 
-        if (event.button != wf::buttonbinding_t(button).get_button())
+        if (event.button != wf::buttonbinding_t(button).get_button() && event.button != wf::buttonbinding_t(button_keep_ratio).get_button())
         {
             return;
         }
@@ -276,6 +291,11 @@ class wayfire_resize : public wf::per_output_plugin_instance_t, public wf::point
         int dy     = input.y - grab_start.y;
         int width  = grabbed_geometry.width;
         int height = grabbed_geometry.height;
+        double ratio;
+        if (keep_ratio)
+        {
+          ratio = (double)width / height;
+        }
 
         if (edges & WLR_EDGE_LEFT)
         {
@@ -293,8 +313,14 @@ class wayfire_resize : public wf::per_output_plugin_instance_t, public wf::point
             height += dy;
         }
 
-        height = std::max(height, 1);
-        width  = std::max(width, 1);
+        if (keep_ratio)
+        {
+          height = std::min(std::max(height, 1), (int)(width / ratio));
+          width  = std::min(std::max(width, 1), (int)(height * ratio));
+        } else {
+          height = std::max(height, 1);
+          width  = std::max(width, 1);
+        }
         view->resize(width, height);
     }
 
@@ -306,6 +332,7 @@ class wayfire_resize : public wf::per_output_plugin_instance_t, public wf::point
         }
 
         output->rem_binding(&activate_binding);
+        output->rem_binding(&activate_binding_keep_ratio);
     }
 };
 
