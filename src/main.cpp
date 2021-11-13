@@ -109,10 +109,10 @@ static void wlr_log_handler(wlr_log_importance level,
 }
 
 #ifdef PRINT_TRACE
-static void signal_handler(int signal)
+static void signal_handler(int sig)
 {
     std::string error;
-    switch (signal)
+    switch (sig)
     {
       case SIGSEGV:
         error = "Segmentation fault";
@@ -132,7 +132,8 @@ static void signal_handler(int signal)
 
     LOGE("Fatal error: ", error);
     wf::print_trace(false);
-    std::_Exit(-1);
+    signal(SIGABRT, SIG_DFL);
+    raise(SIGABRT);
 }
 
 #endif
