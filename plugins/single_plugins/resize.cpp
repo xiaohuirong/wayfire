@@ -13,18 +13,18 @@ class wayfire_resize : public wf::plugin_interface_t
 {
     wf::signal_connection_t resize_request, view_destroyed;
     wf::button_callback activate_binding;
-    wf::button_callback activate_binding_keep_ratio;
+    wf::button_callback activate_binding_perserve_aspect;
 
     wayfire_view view;
 
     bool was_client_request, is_using_touch;
-    bool keep_ratio = false;
+    bool perserve_aspect = false;
     wf::point_t grab_start;
     wf::geometry_t grabbed_geometry;
 
     uint32_t edges;
     wf::option_wrapper_t<wf::buttonbinding_t> button{"resize/activate"};
-    wf::option_wrapper_t<wf::buttonbinding_t> button_keep_ratio{"resize/activate_keep_ratio"};
+    wf::option_wrapper_t<wf::buttonbinding_t> button_perserve_aspect{"resize/activate_perserve_aspect"};
 
   public:
     void init() override
@@ -38,13 +38,13 @@ class wayfire_resize : public wf::plugin_interface_t
             return activate(false);
         };
 
-        activate_binding_keep_ratio = [=] (auto)
+        activate_binding_perserve_aspect = [=] (auto)
         {
             return activate(true);
         };
 
         output->add_button(button, &activate_binding);
-        output->add_button(button_keep_ratio, &activate_binding_keep_ratio);
+        output->add_button(button_perserve_aspect, &activate_binding_perserve_aspect);
         grab_interface->callbacks.pointer.button = [=] (uint32_t b, uint32_t state)
         {
             if ((state == WLR_BUTTON_RELEASED) && was_client_request &&
@@ -53,7 +53,7 @@ class wayfire_resize : public wf::plugin_interface_t
                 return input_pressed(state);
             }
 
-            if (b != wf::buttonbinding_t(button).get_button() && b != wf::buttonbinding_t(button_keep_ratio).get_button())
+            if (b != wf::buttonbinding_t(button).get_button() && b != wf::buttonbinding_t(button_perserve_aspect).get_button())
             {
                 return;
             }
@@ -110,7 +110,7 @@ class wayfire_resize : public wf::plugin_interface_t
         {
             is_using_touch     = false;
             was_client_request = false;
-            keep_ratio = keep;
+            perserve_aspect = keep;
 
             return initiate(view);
         }
@@ -299,7 +299,7 @@ class wayfire_resize : public wf::plugin_interface_t
         int width  = grabbed_geometry.width;
         int height = grabbed_geometry.height;
         double ratio;
-        if (keep_ratio)
+        if (perserve_aspect)
         {
           ratio = (double)width / height;
         }
@@ -320,7 +320,7 @@ class wayfire_resize : public wf::plugin_interface_t
             height += dy;
         }
 
-        if (keep_ratio)
+        if (perserve_aspect)
         {
           height = std::min(std::max(height, 1), (int)(width / ratio));
           width  = std::min(std::max(width, 1), (int)(height * ratio));
@@ -339,7 +339,7 @@ class wayfire_resize : public wf::plugin_interface_t
         }
 
         output->rem_binding(&activate_binding);
-        output->rem_binding(&activate_binding_keep_ratio);
+        output->rem_binding(&activate_binding_perserve_aspect);
     }
 };
 
