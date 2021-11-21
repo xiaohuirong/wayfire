@@ -171,6 +171,25 @@ struct wlr_idle_inhibitor_t : public wf::idle_inhibitor_t
     }
 };
 
+struct wlr_keyboard_inhibitor
+{
+    wf::wl_listener_wrapper on_destroy;
+    wlr_keyboard_inhibitor(wlr_keyboard_shortcuts_inhibitor_v1 *inhibitor)
+    {
+        on_destroy.set_callback([=] (void*)
+        {
+            auto view = (wf::view_interface_t*)(inhibitor->data);
+            if (view)
+            {
+                view->keyboard_inhibit = nullptr;
+                on_destroy.disconnect();
+            }
+            delete this;
+        });
+        on_destroy.connect(&inhibitor->events.destroy);
+    }
+};
+
 void wf::compositor_core_impl_t::init()
 {
     wlr_renderer_init_wl_display(renderer, display);
@@ -300,6 +319,21 @@ void wf::compositor_core_impl_t::init()
         protocols.foreign_registry);
     protocols.foreign_v2 = wlr_xdg_foreign_v2_create(display,
         protocols.foreign_registry);
+
+    protocols.keyboard_inhibit = wlr_keyboard_shortcuts_inhibit_v1_create(display);
+    keyboard_inhibit_new.set_callback([&] (void *data)
+    {
+        auto inhibitor = (struct wlr_keyboard_shortcuts_inhibitor_v1*)data;
+        auto& keyboard_focus = wf::get_core_impl().seat->keyboard_focus;
+        if (keyboard_focus && (keyboard_focus->priv->wsurface == inhibitor->surface))
+        {
+            keyboard_focus->keyboard_inhibit = inhibitor;
+            wlr_keyboard_shortcuts_inhibitor_v1_activate(inhibitor);
+            inhibitor->data = keyboard_focus.get();
+            new wlr_keyboard_inhibitor(inhibitor);
+        }
+    });
+    keyboard_inhibit_new.connect(&protocols.keyboard_inhibit->events.new_inhibitor);
 
     wf_shell  = wayfire_shell_create(display);
     gtk_shell = wf_gtk_shell_create(display);

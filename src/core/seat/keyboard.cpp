@@ -276,6 +276,12 @@ bool wf::keyboard_t::handle_keyboard_key(uint32_t key, uint32_t state)
 
     input->locked_mods = this->get_locked_mods();
 
+    auto view = seat->keyboard_focus.get();
+    if (view && view->keyboard_inhibit && view->keyboard_inhibit->active)
+    {
+        return false;
+    }
+
     if (state == WLR_KEY_PRESSED)
     {
         auto session = wlr_backend_get_session(wf::get_core().backend);
@@ -320,7 +326,7 @@ bool wf::keyboard_t::handle_keyboard_key(uint32_t key, uint32_t state)
         mod_binding_key = 0;
     }
 
-    auto iv = interactive_view_from_view(seat->keyboard_focus.get());
+    auto iv = interactive_view_from_view(view);
     if (iv && !handled_in_plugin)
     {
         iv->handle_key(key, state);

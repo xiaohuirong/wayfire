@@ -122,6 +122,8 @@ class compositor_core_t : public wf::object_base_t
         wlr_xdg_foreign_registry *foreign_registry;
         wlr_xdg_foreign_v1 *foreign_v1;
         wlr_xdg_foreign_v2 *foreign_v2;
+
+        wlr_keyboard_shortcuts_inhibit_manager_v1 *keyboard_inhibit;
     } protocols;
 
     std::string to_string() const
