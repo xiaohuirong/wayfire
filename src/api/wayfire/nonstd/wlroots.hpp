@@ -45,12 +45,15 @@ extern "C"
     struct wlr_surface;
     struct wlr_texture;
     struct wlr_viewporter;
+    struct wlr_keyboard_shortcuts_inhibit_manager_v1;
+    struct wlr_keyboard_shortcuts_inhibitor_v1;
 
 #include <wlr/types/wlr_input_device.h>
 #include <wlr/types/wlr_pointer.h>
 #include <wlr/types/wlr_keyboard.h>
 #include <wlr/types/wlr_touch.h>
 #include <wlr/types/wlr_output.h>
+#include <wlr/types/wlr_keyboard_shortcuts_inhibit_v1.h>
 #include <wlr/util/box.h>
 #include <wlr/util/edges.h>
 #include <wayland-server.h>

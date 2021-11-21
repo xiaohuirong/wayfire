@@ -287,6 +287,12 @@ bool wf::keyboard_t::handle_keyboard_key(uint32_t key, uint32_t state)
     auto mod = mod_from_key(key);
     input->locked_mods = this->get_locked_mods();
 
+    auto view = seat->keyboard_focus.get();
+    if (view && view->keyboard_inhibit && view->keyboard_inhibit->active)
+    {
+        return false;
+    }
+
     if (state == WLR_KEY_PRESSED)
     {
         auto session = wf::get_core().session;

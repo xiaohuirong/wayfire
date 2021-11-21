@@ -383,6 +383,8 @@ class view_interface_t : public wf::signal::provider_t, public wf::object_base_t
     class view_priv_impl;
     std::unique_ptr<view_priv_impl> priv;
 
+    struct wlr_keyboard_shortcuts_inhibitor_v1* keyboard_inhibit = nullptr;
+
   protected:
     view_interface_t();
     view_interface_t(scene::floating_inner_ptr surface_root_node);
