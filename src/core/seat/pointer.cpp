@@ -348,8 +348,14 @@ void wf::pointer_t::handle_pointer_button(wlr_event_pointer_button *ev,
             wf::get_core().focus_output(output);
         }
 
-        handled_in_binding |= input->get_active_bindings().handle_button(
-            wf::buttonbinding_t{seat->get_modifiers(), ev->button});
+        uint32_t modifiers = seat->get_modifiers();
+        auto view = seat->keyboard_focus.get();
+        if (handled_in_binding || !modifiers ||
+            !(view && view->keyboard_inhibit && view->keyboard_inhibit->active))
+        {
+          handled_in_binding |= input->get_active_bindings().handle_button(
+              wf::buttonbinding_t{modifiers, ev->button});
+        }
     } else
     {
         count_pressed_buttons--;
@@ -520,8 +526,18 @@ void wf::pointer_t::handle_pointer_motion_absolute(
 void wf::pointer_t::handle_pointer_axis(wlr_event_pointer_axis *ev,
     input_event_processing_mode_t mode)
 {
-    bool handled_in_binding = input->get_active_bindings().handle_axis(
-        seat->get_modifiers(), ev);
+    uint32_t modifiers = seat->get_modifiers();
+
+    bool handled_in_binding = false;
+    auto view = seat->keyboard_focus.get();
+    if (!input->active_grab && modifiers &&
+        (view && view->keyboard_inhibit && view->keyboard_inhibit->active))
+    {
+      // do not use for binding
+    } else
+    {
+      handled_in_binding = input->get_active_bindings().handle_axis(modifiers, ev);
+    }
     seat->break_mod_bindings();
 
     if (input->active_grab)
