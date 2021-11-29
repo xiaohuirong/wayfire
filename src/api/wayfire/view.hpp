@@ -469,7 +469,7 @@ class view_interface_t : public surface_interface_t
      */
     uint64_t last_focus_timestamp = 0;
 
-    struct wlr_keyboard_shortcuts_inhibitor_v1* keyboard_inhibit = nullptr;
+    struct wlr_keyboard_shortcuts_inhibitor_v1 *keyboard_inhibit = nullptr;
 
   protected:
     view_interface_t();
