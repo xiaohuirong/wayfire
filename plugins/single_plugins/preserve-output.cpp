@@ -270,7 +270,7 @@ class wayfire_preserve_output : public wf::per_output_plugin_instance_t
         }
 
         // Start listening for view resize events AFTER this callback has finished
-        output->connect(&view_moved);
+        // output->connect(&view_moved);
     }
 
     wf::signal::connection_t<wf::view_geometry_changed_signal> view_moved =
