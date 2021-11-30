@@ -269,35 +269,7 @@ class wayfire_preserve_output : public wf::plugin_interface_t
             // Remove all last output info from views
             view_erase_data(view);
         }
-
-        // Start listening for view resize events AFTER this callback has finished
-        output->connect_signal("view-geometry-changed", &view_moved);
     }
-
-    wf::signal_connection_t view_moved = [=] (wf::signal_data_t *data)
-    {
-        // Triggered whenever a view on this output's geometry changed
-        auto signal_data = (wf::view_geometry_changed_signal*)data;
-        auto view = signal_data->view;
-
-        // Ignore event if geometry didn't actually change
-        if (signal_data->old_geometry == view->get_wm_geometry())
-        {
-            return;
-        }
-
-        if (view_has_data(view))
-        {
-            // Remove a view's last output info if it is deliberately moved
-            // by user
-            if (!outputs_being_removed)
-            {
-                LOGD("View moved, deleting last output info for: ",
-                    view->get_title());
-                view_erase_data(view);
-            }
-        }
-    };
 
     wf::wl_idle_call idle_restore_views;
 
