@@ -1423,8 +1423,9 @@ class output_layout_t::impl
                 wlr_output_layout_add_auto(output_layout, handle);
 
                 /* Get the correct position */
-                auto box = wlr_output_layout_get_box(output_layout, handle);
-                assert(box);
+                struct wlr_box box;
+                wlr_output_layout_get_box(output_layout, handle, &box);
+                assert(box.width);
                 lo->apply_state(state);
             }
         }
@@ -1473,11 +1474,12 @@ class output_layout_t::impl
             auto head = wlr_output_configuration_head_v1_create(
                 wlr_configuration, output.first);
 
-            auto box = wlr_output_layout_get_box(output_layout, output.first);
-            if (box)
+            struct wlr_box box;
+            wlr_output_layout_get_box(output_layout, output.first, &box);
+            if (box.width)
             {
-                head->state.x = box->x;
-                head->state.y = box->y;
+                head->state.x = box.x;
+                head->state.y = box.y;
             }
         }
 

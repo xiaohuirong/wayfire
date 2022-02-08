@@ -163,11 +163,12 @@ wf::geometry_t wf::output_t::get_relative_geometry() const
 
 wf::geometry_t wf::output_t::get_layout_geometry() const
 {
-    auto box = wlr_output_layout_get_box(
-        wf::get_core().output_layout->get_handle(), handle);
-    if (box)
+    struct wlr_box box;
+    wlr_output_layout_get_box(
+        wf::get_core().output_layout->get_handle(), handle, &box);
+    if (box.width)
     {
-        return *box;
+        return box;
     } else
     {
         LOGE("Get layout geometry for an invalid output!");
