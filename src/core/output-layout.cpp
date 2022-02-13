@@ -1421,11 +1421,6 @@ class output_layout_t::impl
             {
                 ++count_enabled;
                 wlr_output_layout_add_auto(output_layout, handle);
-
-                /* Get the correct position */
-                struct wlr_box box;
-                wlr_output_layout_get_box(output_layout, handle, &box);
-                assert(box.width);
                 lo->apply_state(state);
             }
         }
