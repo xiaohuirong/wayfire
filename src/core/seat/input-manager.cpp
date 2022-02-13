@@ -44,6 +44,10 @@ static std::unique_ptr<wf::input_device_impl_t> create_wf_device_for_device(
 
 void wf::input_manager_t::handle_new_input(wlr_input_device *dev)
 {
+    if(strncmp(dev->name, "WH-1000XM2 (AVRCP)", 19) == 0) {
+        LOGI("ignore new input: ", dev->name);
+        return;
+    }
     LOGI("handle new input: ", dev->name,
         ", default mapping: ", dev->name);
     input_devices.push_back(create_wf_device_for_device(dev));
