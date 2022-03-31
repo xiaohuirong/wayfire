@@ -278,7 +278,7 @@ void wf::seat_t::update_drag_icon()
 void wf::seat_t::set_keyboard(wf::keyboard_t *keyboard)
 {
     this->current_keyboard = keyboard;
-    wlr_seat_set_keyboard(seat, keyboard ? keyboard->device : NULL);
+    wlr_seat_set_keyboard(seat, keyboard ? keyboard->device->keyboard : NULL);
 }
 
 void wf::seat_t::break_mod_bindings()
