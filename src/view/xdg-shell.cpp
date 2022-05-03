@@ -38,12 +38,14 @@ void wayfire_xdg_popup::initialize()
     {
         wf::emit_ping_timeout_signal(self());
     });
+    on_repostion.set_callback([&] (void*) { unconstrain(); });
 
     on_map.connect(&popup->base->events.map);
     on_unmap.connect(&popup->base->events.unmap);
     on_destroy.connect(&popup->base->events.destroy);
     on_new_popup.connect(&popup->base->events.new_popup);
     on_ping_timeout.connect(&popup->base->events.ping_timeout);
+    on_repostion.connect(&popup->events.reposition);
 
     popup->base->data = this;
     parent_geometry_changed.set_callback([=] (wf::signal_data_t*)
@@ -100,8 +102,8 @@ void wayfire_xdg_popup::update_position()
     }
 
     wf::pointf_t popup_offset = {
-        1.0 * popup->geometry.x + popup_parent->get_window_offset().x,
-        1.0 * popup->geometry.y + popup_parent->get_window_offset().y,
+        1.0 * popup->current.geometry.x + popup_parent->get_window_offset().x,
+        1.0 * popup->current.geometry.y + popup_parent->get_window_offset().y,
     };
 
     auto parent_geometry = popup_parent->get_output_geometry();

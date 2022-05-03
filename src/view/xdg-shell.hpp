@@ -10,7 +10,7 @@ class wayfire_xdg_popup : public wf::wlr_view_t
 {
   protected:
     wf::wl_listener_wrapper on_destroy, on_new_popup,
-        on_map, on_unmap, on_ping_timeout;
+        on_map, on_unmap, on_ping_timeout, on_repostion;
     wf::signal_connection_t parent_geometry_changed,
         parent_title_changed, parent_app_id_changed;
 
