@@ -150,9 +150,11 @@ endif
 
 if have_xwayland
   xcb = dependency('xcb')
+  xcb_icccm = dependency('xcb-icccm')
   conf_data.set('WF_HAS_XWAYLAND', 1)
 else
   xcb = declare_dependency() # dummy dep
+  xcb_icccm = declare_dependency() # dummy dep
   conf_data.set('WF_HAS_XWAYLAND', 0)
 endif
 

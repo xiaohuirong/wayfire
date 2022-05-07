@@ -596,7 +596,7 @@ class wayfire_xwayland_view : public wayfire_xwayland_view_base
         {
             wf::view_hints_changed_signal data;
             data.view = this;
-            if (xw->hints_urgency)
+            if (xcb_icccm_wm_hints_get_urgency(xw->hints))
             {
                 data.demands_attention = true;
             }
