@@ -250,9 +250,11 @@ void render_rectangle(wf::geometry_t geometry, wf::color_t color,
 
 void render_begin()
 {
-    if (!wlr_egl_is_current(wf::get_core_impl().egl))
+    auto egl = wf::get_core_impl().egl;
+    auto context = wlr_egl_get_context(egl);
+    if (eglGetCurrentContext() != context)
     {
-        wlr_egl_make_current(wf::get_core_impl().egl);
+	eglMakeCurrent(wlr_egl_get_display(egl), EGL_NO_SURFACE, EGL_NO_SURFACE, context);
     }
 
     GL_CALL(glEnable(GL_BLEND));

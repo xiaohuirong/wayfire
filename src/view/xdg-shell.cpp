@@ -467,7 +467,7 @@ static wlr_xdg_shell *xdg_handle = nullptr;
 void wf::init_xdg_shell()
 {
     static wf::wl_listener_wrapper on_xdg_created;
-    xdg_handle = wlr_xdg_shell_create(wf::get_core().display);
+    xdg_handle = wlr_xdg_shell_create(wf::get_core().display, 3);
 
     if (xdg_handle)
     {
