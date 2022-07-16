@@ -260,7 +260,7 @@ void wf::tablet_tool_t::handle_proximity(wlr_tablet_tool_proximity_event *ev)
 wf::tablet_t::tablet_t(wlr_cursor *cursor, wlr_input_device *dev) :
     input_device_impl_t(dev)
 {
-    this->handle = dev->tablet;
+    this->handle = wlr_tablet_from_input_device(dev);
     this->handle->data = this;
     this->cursor = cursor;
 
@@ -443,10 +443,11 @@ wf::tablet_pad_t::tablet_pad_t(wlr_input_device *pad) :
             ev->source == WLR_TABLET_PAD_RING_SOURCE_FINGER, ev->time_msec);
     });
 
-    on_attach.connect(&pad->tablet_pad->events.attach_tablet);
-    on_button.connect(&pad->tablet_pad->events.button);
-    on_strip.connect(&pad->tablet_pad->events.strip);
-    on_ring.connect(&pad->tablet_pad->events.ring);
+    struct wlr_tablet_pad* tablet_pad = wlr_tablet_pad_from_input_device(pad);
+    on_attach.connect(&tablet_pad->events.attach_tablet);
+    on_button.connect(&tablet_pad->events.button);
+    on_strip.connect(&tablet_pad->events.strip);
+    on_ring.connect(&tablet_pad->events.ring);
 }
 
 void wf::tablet_pad_t::update_focus()
