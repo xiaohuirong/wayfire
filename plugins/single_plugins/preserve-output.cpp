@@ -38,8 +38,10 @@ std::string make_output_identifier(wf::output_t *output)
     identifier += output->handle->make;
     identifier += "|";
     identifier += output->handle->model;
-    identifier += "|";
-    identifier += output->handle->serial;
+    if (output->handle->serial) {
+        identifier += "|";
+        identifier += output->handle->serial;
+    }
     return identifier;
 }
 
