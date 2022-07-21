@@ -125,7 +125,7 @@ class headless_input_backend_t
 
     void do_key(uint32_t key, wl_keyboard_key_state state)
     {
-        wlr_event_keyboard_key ev;
+        wlr_keyboard_key_event ev;
         ev.keycode = key;
         ev.state   = state;
         ev.update_state = true;
@@ -135,7 +135,7 @@ class headless_input_backend_t
 
     void do_button(uint32_t button, wlr_button_state state)
     {
-        wlr_event_pointer_button ev;
+        wlr_pointer_button_event ev;
         ev.device    = pointer;
         ev.button    = button;
         ev.state     = state;
@@ -148,7 +148,7 @@ class headless_input_backend_t
     {
         auto cursor = wf::get_core().get_cursor_position();
 
-        wlr_event_pointer_motion ev;
+        wlr_pointer_motion_event ev;
         ev.device    = pointer;
         ev.time_msec = get_current_time();
         ev.delta_x   = ev.unaccel_dx = x - cursor.x;
@@ -160,11 +160,12 @@ class headless_input_backend_t
     void do_touch(int finger, double x, double y)
     {
         auto layout = wf::get_core().output_layout->get_handle();
-        auto box    = wlr_output_layout_get_box(layout, NULL);
+        struct wlr_box box;
+        wlr_output_layout_get_box(layout, NULL, &box);
 
         if (!wf::get_core().get_touch_state().fingers.count(finger))
         {
-            wlr_event_touch_down ev;
+            wlr_touch_down_event ev;
             ev.device    = touch;
             ev.time_msec = get_current_time();
             ev.x = 1.0 * (x - box->x) / box->width;
@@ -173,7 +174,7 @@ class headless_input_backend_t
             wl_signal_emit(&touch->touch->events.down, &ev);
         } else
         {
-            wlr_event_touch_motion ev;
+            wlr_touch_motion_event ev;
             ev.device    = touch;
             ev.time_msec = get_current_time();
             ev.x = 1.0 * (x - box->x) / box->width;
@@ -187,7 +188,7 @@ class headless_input_backend_t
 
     void do_touch_release(int finger)
     {
-        wlr_event_touch_up ev;
+        wlr_touch_up_event ev;
         ev.device    = touch;
         ev.time_msec = get_current_time();
         ev.touch_id  = finger;

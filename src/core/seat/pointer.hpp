@@ -87,9 +87,9 @@ class pointer_t
         input_event_processing_mode_t mode);
     void handle_pointer_pinch_end(wlr_pointer_pinch_end_event *ev,
         input_event_processing_mode_t mode);
-    void handle_pointer_hold_begin(wlr_event_pointer_hold_begin *ev,
+    void handle_pointer_hold_begin(wlr_pointer_hold_begin_event *ev,
         input_event_processing_mode_t mode);
-    void handle_pointer_hold_end(wlr_event_pointer_hold_end *ev,
+    void handle_pointer_hold_end(wlr_pointer_hold_end_event *ev,
         input_event_processing_mode_t mode);
     void handle_pointer_frame();
 
