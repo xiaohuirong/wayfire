@@ -301,7 +301,7 @@ class wayfire_resize : public wf::plugin_interface_t
         double ratio;
         if (perserve_aspect)
         {
-          ratio = (double)width / height;
+            ratio = (double)width / height;
         }
 
         if (edges & WLR_EDGE_LEFT)
@@ -322,11 +322,11 @@ class wayfire_resize : public wf::plugin_interface_t
 
         if (perserve_aspect)
         {
-          height = std::min(std::max(height, 1), (int)(width / ratio));
-          width  = std::min(std::max(width, 1), (int)(height * ratio));
+            height = std::min(std::max(height, 1), (int)(width / ratio));
+            width  = std::min(std::max(width, 1), (int)(height * ratio));
         } else {
-          height = std::max(height, 1);
-          width  = std::max(width, 1);
+            height = std::max(height, 1);
+            width  = std::max(width, 1);
         }
         view->resize(width, height);
     }
