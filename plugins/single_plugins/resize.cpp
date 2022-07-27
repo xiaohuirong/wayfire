@@ -104,13 +104,13 @@ class wayfire_resize : public wf::plugin_interface_t
         output->connect_signal("view-disappeared", &view_destroyed);
     }
 
-    bool activate(bool keep) {
+    bool activate(bool should_perserve_aspect) {
         auto view = wf::get_core().get_cursor_focus_view();
         if (view)
         {
             is_using_touch     = false;
             was_client_request = false;
-            perserve_aspect = keep;
+            perserve_aspect = should_perserve_aspect;
 
             return initiate(view);
         }
