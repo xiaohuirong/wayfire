@@ -3,6 +3,7 @@
 #include "pointing-device.hpp"
 #include "input-manager.hpp"
 #include "wayfire/signal-definitions.hpp"
+#include "../view/view-impl.hpp"
 
 #include <wayfire/util/log.hpp>
 #include <wayfire/core.hpp>
@@ -351,7 +352,8 @@ void wf::pointer_t::handle_pointer_button(wlr_event_pointer_button *ev,
         uint32_t modifiers = seat->get_modifiers();
         auto view = seat->keyboard_focus.get();
         if (handled_in_binding || !modifiers ||
-            !(view && view->keyboard_inhibit && view->keyboard_inhibit->active))
+            !(view && view->view_impl->keyboard_inhibit
+              && view->view_impl->keyboard_inhibit->active))
         {
             handled_in_binding |= input->get_active_bindings().handle_button(
                 wf::buttonbinding_t{modifiers, ev->button});
@@ -531,7 +533,8 @@ void wf::pointer_t::handle_pointer_axis(wlr_event_pointer_axis *ev,
     bool handled_in_binding = false;
     auto view = seat->keyboard_focus.get();
     if (!input->active_grab && modifiers &&
-        (view && view->keyboard_inhibit && view->keyboard_inhibit->active))
+        (view && view->view_impl->keyboard_inhibit &&
+         view->view_impl->keyboard_inhibit->active))
     {
         // do not use for binding
     } else

@@ -6,6 +6,7 @@
 #include "pointer.hpp"
 #include "keyboard.hpp"
 #include "../core-impl.hpp"
+#include "../view/view-impl.hpp"
 #include "../../output/output-impl.hpp"
 #include "cursor.hpp"
 #include "touch.hpp"
@@ -277,7 +278,8 @@ bool wf::keyboard_t::handle_keyboard_key(uint32_t key, uint32_t state)
     input->locked_mods = this->get_locked_mods();
 
     auto view = seat->keyboard_focus.get();
-    if (view && view->keyboard_inhibit && view->keyboard_inhibit->active)
+    if (view && view->view_impl->keyboard_inhibit &&
+        view->view_impl->keyboard_inhibit->active)
     {
         return false;
     }

@@ -181,7 +181,7 @@ struct wlr_keyboard_inhibitor
             auto view = (wf::view_interface_t*)(inhibitor->data);
             if (view)
             {
-                view->keyboard_inhibit = nullptr;
+                view->view_impl->keyboard_inhibit = nullptr;
                 on_destroy.disconnect();
             }
 
@@ -328,7 +328,7 @@ void wf::compositor_core_impl_t::init()
         auto& keyboard_focus = wf::get_core_impl().seat->keyboard_focus;
         if (keyboard_focus && (keyboard_focus->priv->wsurface == inhibitor->surface))
         {
-            keyboard_focus->keyboard_inhibit = inhibitor;
+            keyboard_focus->view_impl->keyboard_inhibit = inhibitor;
             wlr_keyboard_shortcuts_inhibitor_v1_activate(inhibitor);
             inhibitor->data = keyboard_focus.get();
             new wlr_keyboard_inhibitor(inhibitor);
