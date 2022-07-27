@@ -24,7 +24,8 @@ class wayfire_resize : public wf::plugin_interface_t
 
     uint32_t edges;
     wf::option_wrapper_t<wf::buttonbinding_t> button{"resize/activate"};
-    wf::option_wrapper_t<wf::buttonbinding_t> button_perserve_aspect{"resize/activate_perserve_aspect"};
+    wf::option_wrapper_t<wf::buttonbinding_t> button_perserve_aspect{
+        "resize/activate_perserve_aspect"};
 
   public:
     void init() override
@@ -44,7 +45,8 @@ class wayfire_resize : public wf::plugin_interface_t
         };
 
         output->add_button(button, &activate_binding);
-        output->add_button(button_perserve_aspect, &activate_binding_perserve_aspect);
+        output->add_button(button_perserve_aspect,
+            &activate_binding_perserve_aspect);
         grab_interface->callbacks.pointer.button = [=] (uint32_t b, uint32_t state)
         {
             if ((state == WLR_BUTTON_RELEASED) && was_client_request &&
@@ -53,7 +55,8 @@ class wayfire_resize : public wf::plugin_interface_t
                 return input_pressed(state);
             }
 
-            if (b != wf::buttonbinding_t(button).get_button() && b != wf::buttonbinding_t(button_perserve_aspect).get_button())
+            if ((b != wf::buttonbinding_t(button).get_button()) &&
+                (b != wf::buttonbinding_t(button_perserve_aspect).get_button()))
             {
                 return;
             }
@@ -104,13 +107,14 @@ class wayfire_resize : public wf::plugin_interface_t
         output->connect_signal("view-disappeared", &view_destroyed);
     }
 
-    bool activate(bool should_perserve_aspect) {
+    bool activate(bool should_perserve_aspect)
+    {
         auto view = wf::get_core().get_cursor_focus_view();
         if (view)
         {
             is_using_touch     = false;
             was_client_request = false;
-            perserve_aspect = should_perserve_aspect;
+            perserve_aspect    = should_perserve_aspect;
 
             return initiate(view);
         }
@@ -324,10 +328,12 @@ class wayfire_resize : public wf::plugin_interface_t
         {
             height = std::min(std::max(height, 1), (int)(width / ratio));
             width  = std::min(std::max(width, 1), (int)(height * ratio));
-        } else {
+        } else
+        {
             height = std::max(height, 1);
             width  = std::max(width, 1);
         }
+
         view->resize(width, height);
     }
 
