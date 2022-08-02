@@ -1375,7 +1375,8 @@ class output_layout_t::impl
             auto& state  = entry.second;
             auto& lo     = this->outputs[handle];
 
-            if (!(state.source & OUTPUT_IMAGE_SOURCE_SELF))
+            if (!(state.source & OUTPUT_IMAGE_SOURCE_SELF ||
+                  state.source & OUTPUT_IMAGE_SOURCE_DPMS))
             {
                 /* First shut down the output, move its views, etc. while it
                  * is still in the output layout and its global is active.
@@ -1384,6 +1385,17 @@ class output_layout_t::impl
                  * wl_surface.leave events for the to be destroyed output */
                 lo->apply_state(state);
                 wlr_output_layout_remove(output_layout, handle);
+            }
+        }
+
+        /* Disable DPMS state outputs */
+        for (auto& entry : config)
+        {
+            auto& handle = entry.first;
+            auto& state  = entry.second;
+            if (state.source & OUTPUT_IMAGE_SOURCE_DPMS)
+            {
+                wlr_output_enable(handle, false);
             }
         }
 
@@ -1399,6 +1411,7 @@ class output_layout_t::impl
                 !entry.second.position.is_automatic_position())
             {
                 ++count_enabled;
+                wlr_output_enable(handle, true);
                 wlr_output_layout_add(output_layout, handle,
                     state.position.get_x(), state.position.get_y());
                 lo->apply_state(state);
@@ -1420,6 +1433,7 @@ class output_layout_t::impl
                 entry.second.position.is_automatic_position())
             {
                 ++count_enabled;
+                wlr_output_enable(handle, true);
                 wlr_output_layout_add_auto(output_layout, handle);
 
                 /* Get the correct position */
@@ -1438,6 +1452,7 @@ class output_layout_t::impl
 
             if (state.source == OUTPUT_IMAGE_SOURCE_MIRROR)
             {
+                wlr_output_enable(handle, true);
                 lo->apply_state(state);
                 wlr_output_layout_remove(output_layout, handle);
             }
