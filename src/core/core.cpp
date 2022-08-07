@@ -303,6 +303,7 @@ void wf::compositor_core_impl_t::init()
     protocols.foreign_v2 = wlr_xdg_foreign_v2_create(display,
         protocols.foreign_registry);
 
+    wlr_single_pixel_buffer_manager_v1_create(display);
     wf_shell = wayfire_shell_create(display);
     this->bindings = std::make_unique<bindings_repository_t>();
     image_io::init();

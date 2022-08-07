@@ -132,4 +132,5 @@ extern "C"
 #include <wlr/types/wlr_relative_pointer_v1.h>
 #include <wlr/types/wlr_text_input_v3.h>
 #include <wlr/types/wlr_primary_selection_v1.h>
+#include <wlr/types/wlr_single_pixel_buffer_v1.h>
 }
