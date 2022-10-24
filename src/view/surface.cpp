@@ -118,6 +118,7 @@ std::vector<wf::surface_iterator_t> wf::surface_interface_t::enumerate_surfaces(
 
 wf::output_t*wf::surface_interface_t::get_output()
 {
+    if(priv == nullptr) return nullptr;
     return priv->output;
 }
 
