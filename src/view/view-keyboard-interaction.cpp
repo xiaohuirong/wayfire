@@ -14,6 +14,7 @@
 class view_keyboard_interaction_t : public wf::keyboard_interaction_t
 {
     wayfire_view view;
+    struct wlr_keyboard_shortcuts_inhibitor_v1* keyboard_inhibitor = nullptr;
 
   public:
     view_keyboard_interaction_t(wayfire_view _view)
@@ -44,5 +45,28 @@ class view_keyboard_interaction_t : public wf::keyboard_interaction_t
     void handle_keyboard_key(wf::seat_t *seat, wlr_keyboard_key_event event) override
     {
         wlr_seat_keyboard_notify_key(seat->seat, event.time_msec, event.keycode, event.state);
+    }
+
+    bool start_inhibitor(struct wlr_keyboard_shortcuts_inhibitor_v1* inhibitor) override
+    {
+        if (view->get_keyboard_focus_surface() != inhibitor->surface)
+        {
+            return false;
+        }
+
+        keyboard_inhibitor = inhibitor;
+        inhibitor->data = this;
+        return true;
+    }
+
+    bool inhibitor_active() override
+    {
+        return keyboard_inhibitor && keyboard_inhibitor->active;
+    }
+
+    void stop_inhibitor() override
+    {
+        keyboard_inhibitor->data = nullptr;
+        keyboard_inhibitor = nullptr;
     }
 };

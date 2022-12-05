@@ -222,7 +222,7 @@ void wf::pointer_t::handle_pointer_button(wlr_pointer_button_event *ev,
         uint32_t modifiers = seat->priv->get_modifiers();
         auto view = seat->keyboard_focus.get();
         if (handled_in_binding || !modifiers ||
-            !(view && view->keyboard_inhibit && view->keyboard_inhibit->active))
+            !(view && view->keyboard_interaction().inhibitor_active()))
         {
           handled_in_binding |= wf::get_core().bindings->handle_button(
               wf::buttonbinding_t{modifiers, ev->button});
@@ -330,7 +330,7 @@ void wf::pointer_t::handle_pointer_axis(wlr_pointer_axis_event *ev,
     bool handled_in_binding = false;
     auto view = seat->keyboard_focus.get();
     if (!input->active_grab && modifiers &&
-        (view && view->keyboard_inhibit && view->keyboard_inhibit->active))
+        (view && view->keyboard_interaction().inhibitor_active()))
     {
       // do not use for binding
     } else

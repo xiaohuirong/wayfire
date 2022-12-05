@@ -88,6 +88,25 @@ class keyboard_interaction_t
     virtual void handle_keyboard_key(wf::seat_t *seat, wlr_keyboard_key_event event)
     {}
 
+    /**
+     * Start a keyboard shortcut inhibitor.
+     */
+    virtual bool start_inhibitor(struct wlr_keyboard_shortcuts_inhibitor_v1* inhibitor)
+    {
+        return false;
+    }
+
+    /**
+     * Stop a keyboard shortcut inhibitor.
+     */
+    virtual void stop_inhibitor()
+    {}
+
+    virtual bool inhibitor_active()
+    {
+        return false;
+    }
+
     keyboard_interaction_t() = default;
     virtual ~keyboard_interaction_t()
     {}

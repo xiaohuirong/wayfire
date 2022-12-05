@@ -288,7 +288,7 @@ bool wf::keyboard_t::handle_keyboard_key(uint32_t key, uint32_t state)
     input->locked_mods = this->get_locked_mods();
 
     auto view = seat->keyboard_focus.get();
-    if (view && view->keyboard_inhibit && view->keyboard_inhibit->active)
+    if (view && view->keyboard_interaction().inhibitor_active())
     {
         return false;
     }
