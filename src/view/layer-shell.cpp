@@ -561,7 +561,7 @@ void wf::init_layer_shell()
 {
     static wf::wl_listener_wrapper on_created;
 
-    layer_shell_handle = wlr_layer_shell_v1_create(wf::get_core().display);
+    layer_shell_handle = wlr_layer_shell_v1_create(wf::get_core().display, 4);
     if (layer_shell_handle)
     {
         on_created.set_callback([] (void *data)

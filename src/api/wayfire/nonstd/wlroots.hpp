@@ -8,6 +8,7 @@
 extern "C"
 {
     struct wlr_backend;
+    struct wlr_session;
     struct wlr_renderer;
     struct wlr_seat;
     struct wlr_cursor;
