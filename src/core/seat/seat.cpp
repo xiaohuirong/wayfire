@@ -40,8 +40,8 @@ wf::point_t wf::drag_icon_t::get_offset()
 
     if (is_mapped())
     {
-        pos.x += icon->surface->sx;
-        pos.y += icon->surface->sy;
+        pos.x += icon->surface->current.dx;
+        pos.y += icon->surface->current.dy;
     }
 
     return {(int)pos.x, (int)pos.y};

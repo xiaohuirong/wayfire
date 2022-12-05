@@ -84,6 +84,7 @@ class compositor_core_t : public wf::object_base_t
      * used instead of this one
      */
     wlr_backend *backend;
+    wlr_session *session;
     wlr_renderer *renderer;
     wlr_allocator *allocator;
 

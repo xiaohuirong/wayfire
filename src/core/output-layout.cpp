@@ -749,7 +749,8 @@ struct output_layout_output_t
 
             /* The mirrored output was repainted, schedule repaint
              * for us as well */
-            wlr_output_damage_whole(handle);
+            // gone with wlroots 1.17
+            // wlr_output_damage_whole(handle);
             wlr_output_schedule_frame(handle);
         });
         on_mirrored_frame.connect(&wo->handle->events.commit);
