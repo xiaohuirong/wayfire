@@ -284,6 +284,8 @@ struct output_layout_output_t
         on_destroy.connect(&handle->events.destroy);
         initialize_config_options();
 
+// gone with wlroots 4287f70dc325877829286eb8e0ecf1723465230a
+#if 0
         bool is_nested_compositor = wlr_output_is_wl(handle);
 
 #if WLR_HAS_X11_BACKEND
@@ -299,6 +301,7 @@ struct output_layout_output_t
             });
             on_mode.connect(&handle->events.mode);
         }
+#endif
     }
 
     /**
