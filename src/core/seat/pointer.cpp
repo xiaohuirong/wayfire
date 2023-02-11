@@ -220,7 +220,7 @@ void wf::pointer_t::handle_pointer_button(wlr_pointer_button_event *ev,
         }
 
         uint32_t modifiers = seat->priv->get_modifiers();
-        auto view = seat->keyboard_focus.get();
+        auto view = seat->priv->keyboard_focus.get();
         if (handled_in_binding || !modifiers ||
             !(view && view->keyboard_interaction().inhibitor_active()))
         {
@@ -328,7 +328,7 @@ void wf::pointer_t::handle_pointer_axis(wlr_pointer_axis_event *ev,
     uint32_t modifiers = seat->priv->get_modifiers();
 
     bool handled_in_binding = false;
-    auto view = seat->keyboard_focus.get();
+    auto view = seat->priv->keyboard_focus.get();
     if (!input->active_grab && modifiers &&
         (view && view->keyboard_interaction().inhibitor_active()))
     {

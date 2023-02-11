@@ -326,7 +326,7 @@ void wf::compositor_core_impl_t::init()
     keyboard_inhibit_new.set_callback([&] (void *data)
     {
         auto inhibitor = (struct wlr_keyboard_shortcuts_inhibitor_v1*)data;
-        auto keyboard_focus = wf::get_core_impl().seat->keyboard_focus.get();
+        auto keyboard_focus = wf::get_core_impl().seat->priv->keyboard_focus.get();
         if (keyboard_focus && keyboard_focus->keyboard_interaction().start_inhibitor(inhibitor))
         {
             wlr_keyboard_shortcuts_inhibitor_v1_activate(inhibitor);
