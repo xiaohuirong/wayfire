@@ -258,7 +258,7 @@ static void handle_gtk_shell_get_gtk_surface(wl_client *client,
         gtk_surface, handle_gtk_surface_destroy);
 
     wlr_surface *wlr_surface     = wlr_surface_from_resource(surface);
-    wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(wlr_surface);
+    wlr_xdg_surface *xdg_surface = wlr_xdg_surface_try_from_wlr_surface(wlr_surface);
     gtk_surface->on_configure.set_callback([=] (void*)
     {
         handle_xdg_surface_on_configure(gtk_surface);

@@ -421,6 +421,7 @@ void wf::wlr_surface_base_t::update_output(wf::output_t *old_output,
     if (new_output && surface)
     {
         wlr_surface_send_enter(surface, new_output->handle);
+        LOGI("output scale: ", new_output->handle->scale);
         wlr_fractional_scale_v1_notify_scale(surface, new_output->handle->scale);
     }
 }

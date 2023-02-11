@@ -1134,12 +1134,10 @@ void wf::xwayland_update_default_cursor()
 void wf::xwayland_bring_to_front(wlr_surface *surface)
 {
 #if WF_HAS_XWAYLAND
-    if (wlr_surface_is_xwayland_surface(surface))
-    {
-        auto xw = wlr_xwayland_surface_from_wlr_surface(surface);
+    auto xw = wlr_xwayland_surface_try_from_wlr_surface(surface);
+    if(xw) {
         wlr_xwayland_surface_restack(xw, NULL, XCB_STACK_MODE_ABOVE);
     }
-
 #endif
 }
 
