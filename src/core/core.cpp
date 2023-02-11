@@ -337,6 +337,7 @@ void wf::compositor_core_impl_t::init()
     keyboard_inhibit_new.connect(&protocols.keyboard_inhibit->events.new_inhibitor);
 
     wlr_single_pixel_buffer_manager_v1_create(display);
+    wlr_fractional_scale_manager_v1_create(display, 1);
 
     wf_shell  = wayfire_shell_create(display);
     gtk_shell = wf_gtk_shell_create(display);
