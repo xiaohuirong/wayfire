@@ -340,7 +340,10 @@ void wf::compositor_core_impl_t::init()
     wlr_fractional_scale_manager_v1_create(display, 1);
 
     wf_shell  = wayfire_shell_create(display);
-    gtk_shell = wf_gtk_shell_create(display);
+    // disable gtk-shell because gtk 3.24.37 tries xdg-activation and fallbacks
+    // to gtk-shell, but the activation code (requesting focus) doesn't check
+    // if xdg-activation is supported.
+    // gtk_shell = wf_gtk_shell_create(display);
 
     image_io::init();
     OpenGL::init();
