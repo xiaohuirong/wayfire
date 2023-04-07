@@ -818,6 +818,11 @@ class wf::render_manager::impl
      */
     bool do_direct_scanout()
     {
+        if (!wlr_output_is_direct_scanout_allowed(output->handle))
+        {
+            return false;
+        }
+
         const bool can_scanout =
             !wf::get_core_impl().seat->drag_active &&
             !output_inhibit_counter &&
