@@ -201,7 +201,7 @@ void wf::compositor_core_impl_t::init()
      * 3. weston toy clients expect xdg-shell before wl_seat, i.e
      * init_desktop_apis() should come before input.
      * 4. GTK expects primary selection early. */
-    compositor = wlr_compositor_create(display, renderer);
+    compositor = wlr_compositor_create(display, 5, renderer);
     wlr_subcompositor_create(display);
 
     protocols.data_device = wlr_data_device_manager_create(display);
