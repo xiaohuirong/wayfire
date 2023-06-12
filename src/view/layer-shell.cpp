@@ -391,8 +391,8 @@ void wayfire_layer_shell_view::initialize()
         wf_layer_shell_manager::get_instance().arrange_unmapped_view(this);
     });
 
-    on_map.connect(&lsurface->events.map);
-    on_unmap.connect(&lsurface->events.unmap);
+    on_map.connect(&lsurface->surface->events.map);
+    on_unmap.connect(&lsurface->surface->events.unmap);
     on_destroy.connect(&lsurface->events.destroy);
     on_new_popup.connect(&lsurface->events.new_popup);
     on_commit_unmapped.connect(&lsurface->surface->events.commit);

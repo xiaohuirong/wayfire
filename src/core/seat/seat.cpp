@@ -27,8 +27,8 @@ wf::drag_icon_t::drag_icon_t(wlr_drag_icon *ic) :
         wf::get_core_impl().seat->drag_icon = nullptr;
     });
 
-    on_map.connect(&icon->events.map);
-    on_unmap.connect(&icon->events.unmap);
+    on_map.connect(&icon->surface->events.map);
+    on_unmap.connect(&icon->surface->events.unmap);
     on_destroy.connect(&icon->events.destroy);
 }
 

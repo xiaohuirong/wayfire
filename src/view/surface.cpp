@@ -272,7 +272,7 @@ wf::wlr_surface_base_t::wlr_surface_base_t(surface_interface_t *self)
         auto subsurface = std::make_unique<subsurface_implementation_t>(sub);
         nonstd::observer_ptr<subsurface_implementation_t> ptr{subsurface};
         _as_si->add_subsurface(std::move(subsurface), false);
-        if (sub->mapped)
+        if (sub->surface->mapped)
         {
             ptr->map(sub->surface);
         }

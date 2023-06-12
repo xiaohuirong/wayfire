@@ -21,8 +21,8 @@ wf::subsurface_implementation_t::subsurface_implementation_t(wlr_subsurface *_su
         (void)this->priv->parent_surface->remove_subsurface(this);
     });
 
-    on_map.connect(&sub->events.map);
-    on_unmap.connect(&sub->events.unmap);
+    on_map.connect(&sub->surface->events.map);
+    on_unmap.connect(&sub->surface->events.unmap);
     on_destroy.connect(&sub->events.destroy);
 
     on_removed.set_callback([=] (auto data)

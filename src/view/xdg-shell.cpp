@@ -40,8 +40,8 @@ void wayfire_xdg_popup::initialize()
     });
     on_repostion.set_callback([&] (void*) { unconstrain(); });
 
-    on_map.connect(&popup->base->events.map);
-    on_unmap.connect(&popup->base->events.unmap);
+    on_map.connect(&popup->base->surface->events.map);
+    on_unmap.connect(&popup->base->surface->events.unmap);
     on_destroy.connect(&popup->base->events.destroy);
     on_new_popup.connect(&popup->base->events.new_popup);
     on_ping_timeout.connect(&popup->base->events.ping_timeout);
@@ -269,8 +269,8 @@ void wayfire_xdg_view::initialize()
         fullscreen_request(wo, xdg_toplevel->requested.fullscreen);
     });
 
-    on_map.connect(&xdg_toplevel->base->events.map);
-    on_unmap.connect(&xdg_toplevel->base->events.unmap);
+    on_map.connect(&xdg_toplevel->base->surface->events.map);
+    on_unmap.connect(&xdg_toplevel->base->surface->events.unmap);
     on_destroy.connect(&xdg_toplevel->base->events.destroy);
     on_new_popup.connect(&xdg_toplevel->base->events.new_popup);
     on_ping_timeout.connect(&xdg_toplevel->base->events.ping_timeout);

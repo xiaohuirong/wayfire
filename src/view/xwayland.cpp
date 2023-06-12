@@ -24,6 +24,9 @@ enum class xwayland_view_type_t
 
 class wayfire_xwayland_view_base : public wf::wlr_view_t
 {
+  private:
+    wf::wl_listener_wrapper on_associate, on_dissociate;
+
   protected:
     static xcb_atom_t _NET_WM_WINDOW_TYPE_NORMAL;
     static xcb_atom_t _NET_WM_WINDOW_TYPE_DIALOG;
@@ -245,8 +248,18 @@ class wayfire_xwayland_view_base : public wf::wlr_view_t
         handle_app_id_changed(nonull(xw->class_t));
         update_decorated();
 
-        on_map.connect(&xw->events.map);
-        on_unmap.connect(&xw->events.unmap);
+        on_associate.set_callback([&] (void*)
+        {
+            on_map.connect(&xw->surface->events.map);
+            on_unmap.connect(&xw->surface->events.unmap);
+        });
+        on_dissociate.set_callback([&] (void*)
+        {
+            on_map.disconnect();
+            on_unmap.disconnect();
+        });
+        on_associate.connect(&xw->events.associate);
+        on_dissociate.connect(&xw->events.dissociate);
         on_destroy.connect(&xw->events.destroy);
         on_configure.connect(&xw->events.request_configure);
         on_set_title.connect(&xw->events.set_title);
@@ -270,8 +283,8 @@ class wayfire_xwayland_view_base : public wf::wlr_view_t
         this->xw = nullptr;
         output_geometry_changed.disconnect();
 
-        on_map.disconnect();
-        on_unmap.disconnect();
+        on_associate.disconnect();
+        on_dissociate.disconnect();
         on_destroy.disconnect();
         on_configure.disconnect();
         on_set_title.disconnect();

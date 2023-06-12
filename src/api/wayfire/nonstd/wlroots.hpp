@@ -52,7 +52,9 @@ extern "C"
 #include <wlr/types/wlr_pointer.h>
 #include <wlr/types/wlr_keyboard.h>
 #include <wlr/types/wlr_touch.h>
+#define static
 #include <wlr/types/wlr_output.h>
+#undef static
 #include <wlr/types/wlr_keyboard_shortcuts_inhibit_v1.h>
 #include <wlr/util/box.h>
 #include <wlr/util/edges.h>
