@@ -902,8 +902,30 @@ void wf::compositor_core_impl_t::move_view_to_output(wayfire_view v,
         view_g     = v->get_wm_geometry();
         old_output_g = old_output->get_relative_geometry();
         new_output_g = new_output->get_relative_geometry();
-        auto ratio_x = (double)new_output_g.width / old_output_g.width;
-        auto ratio_y = (double)new_output_g.height / old_output_g.height;
+
+        // "flag < 0" means one output's width is less than its height, the other one is opposite.
+        // When meet this condition, changing x and width with y and height is a good idea to make resizing more resonable.
+        auto flag = (old_output_g.width - old_output_g.height) * (new_output_g.width - new_output_g.height);
+        double ratio_x,ratio_y;
+        if (flag < 0)
+        {
+            auto tmp = view_g.x; 
+            view_g.x = view_g.y; 
+            view_g.y = tmp;
+
+            tmp = view_g.width;
+            view_g.width = view_g.height;
+            view_g.height = tmp; 
+
+            ratio_x = (double)new_output_g.width / old_output_g.height;
+            ratio_y = (double)new_output_g.height / old_output_g.width;
+        }
+
+        else {
+            ratio_x = (double)new_output_g.width / old_output_g.width;
+            ratio_y = (double)new_output_g.height / old_output_g.height;
+        }
+
         view_g.x     *= ratio_x;
         view_g.y     *= ratio_y;
         view_g.width *= ratio_x;
