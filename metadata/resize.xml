@@ -9,5 +9,10 @@
 			<_long>When the specified button is held down, you can drag windows to resize them.</_long>
 			<default>&lt;super&gt; BTN_RIGHT</default>
 		</option>
+		<option name="activate_keep_ratio" type="button">
+			<_short>Activate resize while keeping ratio</_short>
+			<_long>When the specified button is held down, you can drag windows to resize them while keeping its orignal ratio.</_long>
+			<default>&lt;super&gt; &lt;alt&gt; BTN_RIGHT</default>
+		</option>
 	</plugin>
 </wayfire>

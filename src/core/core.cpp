@@ -767,7 +767,8 @@ pid_t wf::compositor_core_impl_t::run(std::string command)
     static constexpr size_t WRITE_END = 1;
     pid_t pid;
     int pipe_fd[2];
-    pipe2(pipe_fd, O_CLOEXEC);
+    [[maybe_unused]] int unused;
+    unused = pipe2(pipe_fd, O_CLOEXEC);
 
     /* The following is a "hack" for disowning the child processes,
      * otherwise they will simply stay as zombie processes */
@@ -798,7 +799,7 @@ pid_t wf::compositor_core_impl_t::run(std::string command)
         } else
         {
             close(pipe_fd[READ_END]);
-            write(pipe_fd[WRITE_END], (void*)(&pid), sizeof(pid));
+            unused = write(pipe_fd[WRITE_END], (void*)(&pid), sizeof(pid));
             close(pipe_fd[WRITE_END]);
             _exit(0);
         }
@@ -810,7 +811,7 @@ pid_t wf::compositor_core_impl_t::run(std::string command)
         waitpid(pid, &status, 0);
 
         pid_t child_pid;
-        read(pipe_fd[READ_END], &child_pid, sizeof(child_pid));
+        unused = read(pipe_fd[READ_END], &child_pid, sizeof(child_pid));
 
         close(pipe_fd[READ_END]);
 
