@@ -876,7 +876,7 @@ class wf::render_manager::impl
             return false;
         }
 
-        wlr_presentation_surface_sampled_on_output(
+        wlr_presentation_surface_textured_on_output(
             wf::get_core().protocols.presentation, surface, output->handle);
         wlr_output_attach_buffer(output->handle, &surface->buffer->base);
 
@@ -1354,7 +1354,7 @@ class wf::render_manager::impl
     {
         if (surface->get_wlr_surface() != nullptr)
         {
-            wlr_presentation_surface_sampled_on_output(
+            wlr_presentation_surface_textured_on_output(
                 wf::get_core_impl().protocols.presentation,
                 surface->get_wlr_surface(), output->handle);
         }

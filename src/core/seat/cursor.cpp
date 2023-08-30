@@ -164,7 +164,7 @@ void wf::cursor_t::set_cursor(std::string name)
 
     idle_set_cursor.run_once([name, this] ()
     {
-        wlr_xcursor_manager_set_cursor_image(xcursor, name.c_str(), cursor);
+        wlr_cursor_set_xcursor(cursor, xcursor, name.c_str());
     });
 }
 

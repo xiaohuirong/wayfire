@@ -97,10 +97,10 @@ struct wf_xdg_decoration_t
     {
         bool use_csd =
             decor->current.mode == WLR_XDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE;
-        wf::get_core_impl().uses_csd[decor->surface->surface] = use_csd;
+        wf::get_core_impl().uses_csd[decor->toplevel->base->surface] = use_csd;
 
         auto wf_surface = dynamic_cast<wf::wlr_view_t*>(
-            wf::wf_surface_from_void(decor->surface->data));
+            wf::wf_surface_from_void(decor->toplevel->base->data));
         if (wf_surface)
         {
             wf_surface->set_decoration_mode(use_csd);
@@ -114,12 +114,12 @@ struct wf_xdg_decoration_t
         on_commit.set_callback(commit);
         on_destroy.set_callback([&] (void*)
         {
-            wf::get_core_impl().uses_csd.erase(decor->surface->surface);
+            wf::get_core_impl().uses_csd.erase(decor->toplevel->base->surface);
             delete this;
         });
 
         on_mode_request.connect(&decor->events.request_mode);
-        on_commit.connect(&decor->surface->surface->events.commit);
+        on_commit.connect(&decor->toplevel->base->surface->events.commit);
         on_destroy.connect(&decor->events.destroy);
         /* Read initial decoration settings */
         mode_request(NULL);
