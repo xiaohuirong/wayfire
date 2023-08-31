@@ -505,10 +505,22 @@ class WayfireSwitcher : public wf::plugin_interface_t
         }
     }
 
-    std::vector<wayfire_view> get_background_views() const
+    std::vector<wayfire_view> get_below_views() const
     {
         return output->workspace->get_views_on_workspace(
             output->workspace->get_current_workspace(), wf::BELOW_LAYERS);
+    }
+
+    std::vector<wayfire_view> get_background_views() const
+    {
+        return output->workspace->get_views_on_workspace(
+            output->workspace->get_current_workspace(), wf::LAYER_BACKGROUND);
+    }
+
+    std::vector<wayfire_view> get_bottom_views() const
+    {
+        return output->workspace->get_views_on_workspace(
+            output->workspace->get_current_workspace(), wf::LAYER_BOTTOM);
     }
 
     std::vector<wayfire_view> get_overlay_views() const
@@ -517,9 +529,9 @@ class WayfireSwitcher : public wf::plugin_interface_t
             output->workspace->get_current_workspace(), wf::ABOVE_LAYERS);
     }
 
-    void dim_background(float dim)
+    void dim_below_layers(float dim)
     {
-        for (auto view : get_background_views())
+        for (auto view : get_below_views())
         {
             if (dim == 1.0)
             {
@@ -585,8 +597,14 @@ class WayfireSwitcher : public wf::plugin_interface_t
         OpenGL::clear({0, 0, 0, 1});
         OpenGL::render_end();
 
-        dim_background(background_dim);
+        dim_below_layers(background_dim);
+       
+        /* Render the background layer and the layer bottom in sequence. */
         for (auto view : get_background_views())
+        {
+            view->render_transformed(fb, fb.geometry);
+        }
+        for (auto view : get_bottom_views())
         {
             view->render_transformed(fb, fb.geometry);
         }
