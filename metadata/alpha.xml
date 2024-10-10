@@ -9,6 +9,16 @@
 			<_long>When the modifier key is held down, you can scroll down and up to adjust the opacity of the window.</_long>
 			<default>&lt;super&gt; &lt;alt&gt;</default>
 		</option>
+		<option name="increase" type="key">
+			<_short>Increase</_short>
+			<_long>When the key is held down, you can increase the opacity of the window.</_long>
+			<default>&lt;super&gt; &lt;alt&gt; KEY_K</default>
+		</option>
+		<option name="decrease" type="key">
+			<_short>Decrease</_short>
+			<_long>When the key is held down, you can decrease the opacity of the window.</_long>
+			<default>&lt;super&gt; &lt;alt&gt; KEY_J</default>
+		</option>
 		<option name="min_value" type="double">
 			<_short>Minimum</_short>
 			<_long>Sets the minimum opacity of the window between 0 (completely transparent) and 1 (completely opaque).</_long>

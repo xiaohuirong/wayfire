@@ -26,12 +26,15 @@
 #include <wayfire/view.hpp>
 #include <wayfire/plugin.hpp>
 #include <wayfire/output.hpp>
+#include "wayfire/bindings.hpp"
 #include "wayfire/view-transform.hpp"
 #include "wayfire/workspace-manager.hpp"
 
 class wayfire_alpha : public wf::plugin_interface_t
 {
     wf::option_wrapper_t<wf::keybinding_t> modifier{"alpha/modifier"};
+    wf::option_wrapper_t<wf::keybinding_t> increase_alpha{"alpha/increase"};
+    wf::option_wrapper_t<wf::keybinding_t> decrease_alpha{"alpha/decrease"};
     wf::option_wrapper_t<double> min_value{"alpha/min_value"};
 
   public:
@@ -42,6 +45,8 @@ class wayfire_alpha : public wf::plugin_interface_t
 
         min_value.set_callback(min_value_changed);
         output->add_axis(modifier, &axis_cb);
+        output->add_key(increase_alpha, &increase_cb);
+        output->add_key(decrease_alpha, &decrease_cb);
     }
 
     void update_alpha(wayfire_view view, float delta)
@@ -110,6 +115,40 @@ class wayfire_alpha : public wf::plugin_interface_t
         return false;
     };
 
+    wf::key_callback increase_cb = [=] (auto){
+        return change_alpha_from_keyboard(-0.1 / 0.003);
+    };
+
+    wf::key_callback decrease_cb = [=] (auto){
+        return change_alpha_from_keyboard(0.1 / 0.003);
+    };
+
+    bool change_alpha_from_keyboard(float delta) {
+        if (!output->activate_plugin(grab_interface))
+        {
+            return false;
+        }
+
+        output->deactivate_plugin(grab_interface);
+
+        auto view = wf::get_core().get_cursor_focus_view();
+        if (!view)
+        {
+            return false;
+        }
+
+        auto layer = output->workspace->get_view_layer(view);
+
+        if (layer == wf::LAYER_BACKGROUND)
+        {
+            return false;
+        }
+
+        update_alpha(view, delta);
+        return true;
+    }
+
+
     wf::config::option_base_t::updated_callback_t min_value_changed = [=] ()
     {
         for (auto& view : output->workspace->get_views_in_layer(wf::ALL_LAYERS))
@@ -144,6 +183,8 @@ class wayfire_alpha : public wf::plugin_interface_t
         }
 
         output->rem_binding(&axis_cb);
+        output->rem_binding(&increase_cb);
+        output->rem_binding(&decrease_cb);
     }
 };
 
