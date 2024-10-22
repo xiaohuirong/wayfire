@@ -275,7 +275,7 @@ inline bool is_shutting_down()
 struct output_layout_output_t
 {
     wlr_output *handle;
-    output_state_t current_state;
+    output_state_t current_state{};
     bool is_externally_managed = false;
 
     std::unique_ptr<wf::output_impl_t> output;
