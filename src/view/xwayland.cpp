@@ -554,7 +554,7 @@ class wayfire_xwayland_view : public wayfire_xwayland_view_base
         });
         on_request_activate.set_callback([&] (void*)
         {
-            if (!this->activated)
+            if (!this->activated && this->is_mapped())
             {
                 wf::view_focus_request_signal data;
                 data.view = self();
