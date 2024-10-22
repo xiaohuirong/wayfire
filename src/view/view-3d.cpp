@@ -198,11 +198,18 @@ wf::view_3D::view_3D(wayfire_view view, uint32_t z_order_) : z_order(z_order_)
 /* TODO: cache total_transform, because it is often unnecessarily recomputed */
 glm::mat4 wf::view_3D::calculate_total_transform()
 {
-    auto og = view->get_output()->get_relative_geometry();
-    glm::mat4 depth_scale =
-        glm::scale(glm::mat4(1.0), {1, 1, 2.0 / std::min(og.width, og.height)});
+    auto output = view->get_output();
+    if (output != nullptr)
+    {
+        auto og = output->get_relative_geometry();
+        glm::mat4 depth_scale =
+            glm::scale(glm::mat4(1.0), {1, 1, 2.0 / std::min(og.width, og.height)});
 
-    return translation * view_proj * depth_scale * rotation * scaling;
+        return translation * view_proj * depth_scale * rotation * scaling;
+    } else 
+    {
+        return glm::mat4(1.0);
+    }
 }
 
 wf::pointf_t wf::view_3D::transform_point(
