@@ -57,7 +57,7 @@ static wl_output_transform get_transform_from_string(std::string transform)
 }
 
 wlr_output_mode *find_matching_mode(wlr_output *output,
-    const wlr_output_mode& reference)
+    const wlr_output_mode& reference, bool exact_match = false)
 {
     wlr_output_mode *mode;
     wlr_output_mode *best = NULL;
@@ -76,6 +76,11 @@ wlr_output_mode *find_matching_mode(wlr_output *output,
             if (mode->refresh == reference.refresh)
             {
                 return mode;
+            }
+
+            if (exact_match)
+            {
+                continue;
             }
 
             if ((reference.refresh == 0) && mode->preferred)
@@ -600,7 +605,7 @@ struct output_layout_output_t
     }
 
     /** Change the output mode */
-    void apply_mode(const wlr_output_mode& mode)
+    void apply_mode(const wlr_output_mode& mode, bool custom_mode)
     {
         if (handle->current_mode)
         {
@@ -617,7 +622,7 @@ struct output_layout_output_t
         }
 
         refresh_custom_modes();
-        auto built_in = find_matching_mode(handle, mode);
+        auto built_in = find_matching_mode(handle, mode, custom_mode);
         if (built_in)
         {
             wlr_output_set_mode(handle, built_in);
@@ -854,7 +859,7 @@ struct output_layout_output_t
         }
 
         set_enabled(!(state.source & OUTPUT_IMAGE_SOURCE_NONE));
-        apply_mode(state.mode);
+        apply_mode(state.mode, state.uses_custom_mode);
         if (state.source & OUTPUT_IMAGE_SOURCE_SELF)
         {
             if (handle->transform != state.transform)
@@ -1010,8 +1015,18 @@ class output_layout_t::impl
             }
 
             state.source = OUTPUT_IMAGE_SOURCE_SELF;
-            state.mode   = head->state.mode ? *head->state.mode :
-                this->outputs[handle]->current_state.mode;
+
+            if (head->state.mode)
+            {
+                state.mode = *head->state.mode;
+            } else
+            {
+                state.mode.width = head->state.custom_mode.width;
+                state.mode.height = head->state.custom_mode.height;
+                state.mode.refresh = head->state.custom_mode.refresh;
+                state.uses_custom_mode = true;
+            }
+
             state.position  = {head->state.x, head->state.y};
             state.scale     = head->state.scale;
             state.transform = head->state.transform;
