@@ -579,20 +579,7 @@ struct output_layout_output_t
     /** Check whether the given state can be applied */
     bool test_state(const output_state_t& state)
     {
-        if (state.source == OUTPUT_IMAGE_SOURCE_NONE)
-        {
-            return true;
-        }
-
-        if (state.source == OUTPUT_IMAGE_SOURCE_MIRROR)
-        {
-            return true;
-        }
-
-        /* XXX: are there more things to check? */
-        refresh_custom_modes();
-
-        return is_mode_supported(state.mode);
+        return true;
     }
 
     /** Change the output mode */
@@ -624,8 +611,7 @@ struct output_layout_output_t
                 " for output ", handle->name, ". Trying to use custom mode",
                 "(might not work)");
 
-            wlr_output_set_custom_mode(handle, mode.width, mode.height,
-                mode.refresh);
+            wlr_output_set_custom_mode(handle, mode.width, mode.height, mode.refresh);
         }
 
         wlr_output_commit(handle);
