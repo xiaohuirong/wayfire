@@ -547,6 +547,7 @@ void wayfire_layer_shell_view::configure(wf::geometry_t box)
     {
         LOGE("layer-surface has calculated width and height < 0");
         close();
+        return;
     }
 
     wf::wlr_view_t::move(box.x, box.y);
