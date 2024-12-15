@@ -1,5 +1,6 @@
 #include "view-action-interface.hpp"
 
+#include "../wm-actions/wm-actions-signals.hpp"
 #include "wayfire/output.hpp"
 #include "wayfire/view.hpp"
 #include "wayfire/workspace-manager.hpp"
@@ -23,6 +24,14 @@ bool view_action_interface_t::execute(const std::string & name,
 {
     if (name == "set")
     {
+        auto id = wf::get_string(args.at(0));
+
+        if ( id == "always_on_top")
+        {
+            _always_on_top();
+            return false;
+        }
+
         if ((args.size() < 2) || (wf::is_string(args.at(0)) == false))
         {
             LOGE(
@@ -30,8 +39,6 @@ bool view_action_interface_t::execute(const std::string & name,
 
             return true;
         }
-
-        auto id = wf::get_string(args.at(0));
 
         if (id == "alpha")
         {
@@ -429,5 +436,19 @@ void view_action_interface_t::_assign_ws(wf::point_t point)
 
     auto wm = _view->get_wm_geometry();
     _view->move(wm.x + delta.x * size.width, wm.y + delta.y * size.height);
+}
+
+void view_action_interface_t::_always_on_top()
+{
+    wf::wm_actions_toggle_above data;
+
+    auto output = _view->get_output();
+    if (!output)
+    {
+        return;
+    }
+
+    data.view  = _view;
+    output->emit_signal("wm-actions-toggle-above", &data);
 }
 } // End namespace wf.
