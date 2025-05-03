@@ -56,7 +56,7 @@ class safe_list_t
 
     safe_list_t& operator =(const safe_list_t& other)
     {
-        this->idle_cleanup_source = NULL;
+        // this->idle_cleanup_source = NULL;
         other.for_each([&] (auto& el)
         {
             this->push_back(el);
